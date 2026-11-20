@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pengurusan Aduan - MyAduan JTK Kluang</title>
+  <style>
+    :root {
+      --bg-main: #f1f5f9;
+      --bg-white: #ffffff;
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --primary-soft: #e0f2fe;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --success-bg: #dcfce7;
+      --success-text: #15803d;
+      --warning-bg: #fef3c7;
+      --warning-text: #b45309;
+      --info-bg: #e0f2fe;
+      --info-text: #0369a1;
+      --danger-bg: #fee2e2;
+      --danger-text: #b91c1c;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ================= SIDEBAR ================= */
+    .sidebar {
+      width: 245px;
+      background-color: var(--bg-white);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 16px 12px;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      overflow-y: auto;
+    }
+
+    .brand-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .brand-badge {
+      background: linear-gradient(135deg, #16a34a, #0284c7);
+      color: #fff;
+      font-weight: 800;
+      font-size: 15px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.2;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 4px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background-color: #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #334155;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+
+    .user-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-main);
+      line-height: 1.3;
+    }
+
+    .nav-menu {
+      list-style: none;
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-menu a {
+      display: block;
+      text-decoration: none;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #475569;
+      padding: 10px 12px;
+      border-radius: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .nav-menu a:hover {
+      background-color: #f8fafc;
+      color: var(--primary);
+    }
+
+    .nav-menu a.active {
+      background-color: var(--primary-soft);
+      color: var(--primary-dark);
+      font-weight: 700;
+    }
+
+    .office-footer {
+      margin-top: 24px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-color);
+      font-size: 9.5px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .office-footer strong {
+      color: #334155;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .office-motto {
+      margin-top: 6px;
+      font-style: italic;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    /* ================= MAIN CONTENT ================= */
+    .main-wrapper {
+      margin-left: 245px;
+      flex: 1;
+      padding: 20px 28px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: #ffffff;
+      border: none;
+      padding: 9px 16px;
+      border-radius: 6px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+    }
+
+    /* ================= KPI CARDS ================= */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .kpi-card {
+      background: var(--bg-white);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    }
+
+    .kpi-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .kpi-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .kpi-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* ================= PANEL CARD ================= */
+    .card {
+      background: var(--bg-white);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+      border-left: 4px solid var(--primary);
+      padding-left: 10px;
+    }
+
+    /* ================= FILTER BAR ================= */
+    .filter-bar {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr auto;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 12.5px;
+      color: var(--text-main);
+      background-color: #fff;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+    }
+
+    .btn-secondary {
+      background-color: #f8fafc;
+      color: #475569;
+      border: 1px solid #cbd5e1;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-secondary:hover {
+      background-color: #e2e8f0;
+    }
+
+    /* ================= TABLE ================= */
+    .table-responsive {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+    }
+
+    thead th {
+      background-color: #f8fafc;
+      color: #475569;
+      font-weight: 700;
+      text-align: left;
+      padding: 11px 12px;
+      border-bottom: 2px solid var(--border-color);
+      white-space: nowrap;
+    }
+
+    tbody td {
+      padding: 12px;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: middle;
+    }
+
+    tbody tr:hover {
+      background-color: #f8fafc;
+    }
+
+    .ref-no {
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+
+    .sub-text {
+      display: block;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* ================= STATUS BADGES ================= */
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .badge-baru {
+      background-color: var(--info-bg);
+      color: var(--info-text);
+    }
+
+    .badge-siasatan {
+      background-color: var(--warning-bg);
+      color: var(--warning-text);
+    }
+
+    .badge-rundingan {
+      background-color: #f3e8ff;
+      color: #7e22ce;
+    }
+
+    .badge-selesai {
+      background-color: var(--success-bg);
+      color: var(--success-text);
+    }
+
+    .badge-ditutup {
+      background-color: var(--danger-bg);
+      color: var(--danger-text);
+    }
+
+    .btn-action {
+      background-color: var(--primary-soft);
+      color: var(--primary-dark);
+      border: 1px solid #bae6fd;
+      padding: 6px 10px;
+      border-radius: 5px;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-action:hover {
+      background-color: var(--primary);
+      color: #fff;
+    }
+
+    /* ================= MODAL ================= */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.5);
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+    }
+
+    .modal-backdrop.show {
+      display: flex;
+    }
+
+    .modal-box {
+      background: #fff;
+      width: 100%;
+      max-width: 560px;
+      border-radius: 10px;
+      padding: 22px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 16px;
+    }
+
+    .modal-title {
+      font-size: 15px;
+      font-weight: 700;
+      border-left: 4px solid var(--primary);
+      padding-left: 10px;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      background: #f8fafc;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      font-size: 12px;
+    }
+
+    .detail-item span {
+      display: block;
+      color: var(--text-muted);
+      font-size: 11px;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: #334155;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 18px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    @media (max-width: 992px) {
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .filter-bar {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+      }
+      .main-wrapper {
+        margin-left: 0;
+      }
+      body {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div>
+      <div class="brand-box">
+        <div class="brand-badge">&lt;ADN</div>
+        <div class="brand-title">SISTEM PENGURUSAN<br>ADUAN BURUH</div>
+      </div>
+
+      <div class="user-profile">
+        <div class="user-avatar">MH</div>
+        <div class="user-name">Mohamad Hafiz bin<br>Abu Bakar</div>
+      </div>
+
+      <ul class="nav-menu">
+        <li><a href="senarai-tugasan.html">SENARAI TUGASAN</a></li>
+        <li><a href="index.html">PENDAFTARAN ADUAN</a></li>
+        <li><a href="pengurusan-aduan.html" class="active">PENGURUSAN ADUAN</a></li>
+        <li><a href="carian-kes.html">CARIAN KES</a></li>
+        <li><a href="kalendar-aduan.html">KALENDAR ADUAN</a></li>
+        <li><a href="laporan.html">LAPORAN</a></li>
+      </ul>
+    </div>
+
+    <div class="office-footer">
+      <strong>PEJABAT TENAGA KERJA KLUANG</strong>
+      (KLUANG LABOUR OFFICE)<br>
+      KEMENTERIAN SUMBER MANUSIA<br>
+      JALAN PEJABAT KERAJAAN<br>
+      86000 KLUANG, JOHOR<br><br>
+      Tel: 07-772 1646 / 2646<br>
+      E-mel: jtkdkluang@mohr.gov.my<br>
+      Portal: jtksm.mohr.gov.my
+      <div class="office-motto">“Pekerja MADANI Kesuma Bangsa”</div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-wrapper">
+    <div class="topbar">
+      <div class="breadcrumb">
+        <span>🏠</span>
+        <span>Pengurusan Aduan</span>
+      </div>
+      <a href="index.html" class="btn-primary">+ Daftar Aduan Baru</a>
+    </div>
+
+    <!-- KAD STATISTIK -->
+    <section class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Jumlah Keseluruhan Aduan</div>
+        <div class="kpi-value" id="statTotal">0</div>
+        <div class="kpi-sub">Rekod berdaftar tahun 2026</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Aduan Baru</div>
+        <div class="kpi-value" id="statBaru" style="color: #0369a1;">0</div>
+        <div class="kpi-sub">Menunggu tindakan awal</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Dalam Siasatan / Rundingan</div>
+        <div class="kpi-value" id="statProses" style="color: #b45309;">0</div>
+        <div class="kpi-sub">Tindakan pegawai penyiasat</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Kes Selesai</div>
+        <div class="kpi-value" id="statSelesai" style="color: #15803d;">0</div>
+        <div class="kpi-sub">Diselesaikan / ditutup</div>
+      </div>
+    </section>
+
+    <!-- JADUAL PENGURUSAN ADUAN -->
+    <section class="card">
+      <div class="section-header">
+        <h2 class="section-title">Senarai & Tindakan Pengurusan Aduan</h2>
+        <button class="btn-secondary" onclick="eksportCSV()">📥 Muat Turun CSV</button>
+      </div>
+
+      <!-- PENAPIS & CARIAN -->
+      <div class="filter-bar">
+        <input
+          type="text"
+          id="searchInput"
+          class="form-control"
+          placeholder="Cari No. Rujukan, Nama Pengadu, No. MyKad atau Nama Majikan..."
+          onkeyup="tapisAduan()"
+        />
+        <select id="statusFilter" class="form-control" onchange="tapisAduan()">
+          <option value="">-- Semua Status --</option>
+          <option value="Baru">Baru</option>
+          <option value="Dalam Siasatan">Dalam Siasatan</option>
+          <option value="Sesi Rundingan">Sesi Rundingan</option>
+          <option value="Selesai">Selesai</option>
+          <option value="Ditutup">Ditutup</option>
+        </select>
+        <select id="kategoriFilter" class="form-control" onchange="tapisAduan()">
+          <option value="">-- Semua Kategori Isu --</option>
+          <option value="Gaji Tidak Dibayar">Gaji Tidak Dibayar</option>
+          <option value="Penamatan Kerja Tanpa Notis">Penamatan Kerja Tanpa Notis</option>
+          <option value="Bayaran Kerja Lebih Masa (OT)">Bayaran Kerja Lebih Masa (OT)</option>
+          <option value="Baki Cuti Tahunan">Baki Cuti Tahunan</option>
+        </select>
+        <button class="btn-secondary" onclick="resetPenapis()">Set Semula</button>
+      </div>
+
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>No. Rujukan</th>
+              <th>Tarikh Daftar</th>
+              <th>Maklumat Pengadu</th>
+              <th>Majikan / Defendan</th>
+              <th>Kategori Aduan</th>
+              <th>Pegawai Penyiasat</th>
+              <th>Status</th>
+              <th>Tindakan</th>
+            </tr>
+          </thead>
+          <tbody id="aduanTableBody">
+            <!-- Data dipaparkan melalui JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL KEMASKINI TINDAKAN ADUAN -->
+  <div class="modal-backdrop" id="modalUrus">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalTitle">Kemaskini Tindakan Aduan</h3>
+        <button class="close-btn" onclick="tutupModal()">&times;</button>
+      </div>
+
+      <div class="detail-grid" id="modalDetails">
+        <!-- Butiran kes -->
+      </div>
+
+      <input type="hidden" id="editId" />
+
+      <div class="form-group">
+        <label for="editStatus">Status Semasa Aduan</label>
+        <select id="editStatus" class="form-control">
+          <option value="Baru">Baru</option>
+          <option value="Dalam Siasatan">Dalam Siasatan</option>
+          <option value="Sesi Rundingan">Sesi Rundingan</option>
+          <option value="Selesai">Selesai</option>
+          <option value="Ditutup">Ditutup</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="editPegawai">Pegawai Penyiasat Bertanggungjawab</label>
+        <select id="editPegawai" class="form-control">
+          <option value="Mohamad Hafiz bin Abu Bakar">Mohamad Hafiz bin Abu Bakar</option>
+          <option value="Nurul Aina binti Zulkifli">Nurul Aina binti Zulkifli</option>
+          <option value="Ahmad Faizal bin Rahman">Ahmad Faizal bin Rahman</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="editTarikhTemujanji">Tarikh Siasatan / Panggilan Rundingan</label>
+        <input type="date" id="editTarikhTemujanji" class="form-control" />
+      </div>
+
+      <div class="form-group">
+        <label for="editCatatan">Catatan Tindakan Pegawai</label>
+        <textarea id="editCatatan" rows="3" class="form-control" placeholder="Masukkan ringkasan tindakan, panggilan kepada majikan, atau keputusan rundingan..."></textarea>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="tutupModal()">Batal</button>
+        <button class="btn-primary" onclick="simpanTindakan()">💾 Simpan Kemaskini</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Data contoh aduan JTK Kluang
+    let senaraiAduan = [
+      {
+        id: 1,
+        noRujukan: "JTK/KLG/2026/0101",
+        tarikhDaftar: "12/11/2026",
+        namaPengadu: "Ahmad bin Ismail",
+        noMyKad: "890412-01-5431",
+        telefon: "013-7654321",
+        majikan: "Syarikat Perkilangan Maju Kluang Sdn. Bhd.",
+        sektor: "Pembuatan",
+        kategori: "Gaji Tidak Dibayar",
+        pegawai: "Mohamad Hafiz bin Abu Bakar",
+        status: "Dalam Siasatan",
+        tarikhTemujanji: "2026-11-25",
+        catatan: "Notis panggilan pertama telah dikeluarkan kepada pihak HR majikan."
+      },
+      {
+        id: 2,
+        noRujukan: "JTK/KLG/2026/0102",
+        tarikhDaftar: "15/11/2026",
+        namaPengadu: "Siti Aminah binti Yusof",
+        noMyKad: "940822-01-6112",
+        telefon: "019-8821140",
+        majikan: "Restoran Sri Kluang Enterprise",
+        sektor: "Perkhidmatan",
+        kategori: "Penamatan Kerja Tanpa Notis",
+        pegawai: "Mohamad Hafiz bin Abu Bakar",
+        status: "Baru",
+        tarikhTemujanji: "",
+        catatan: "Aduan baru diterima melalui kaunter. Menunggu semakan dokumen kontrak."
+      },
+      {
+        id: 3,
+        noRujukan: "JTK/KLG/2026/0103",
+        tarikhDaftar: "05/11/2026",
+        namaPengadu: "Ramesh a/l Subramaniam",
+        noMyKad: "851103-01-5899",
+        telefon: "012-7190023",
+        majikan: "Ladang Sawit Simpang Renggam Bhd.",
+        sektor: "Perladangan",
+        kategori: "Bayaran Kerja Lebih Masa (OT)",
+        pegawai: "Nurul Aina binti Zulkifli",
+        status: "Sesi Rundingan",
+        tarikhTemujanji: "2026-11-23",
+        catatan: "Kedua-dua pihak bersetuju hadir sesi rundingan damai di Bilik Rundingan 2."
+      },
+      {
+        id: 4,
+        noRujukan: "JTK/KLG/2026/0098",
+        tarikhDaftar: "28/10/2026",
+        namaPengadu: "Wong Mei Ling",
+        noMyKad: "910219-01-6044",
+        telefon: "016-7743219",
+        majikan: "Pembinaan Cekap Johor Sdn. Bhd.",
+        sektor: "Pembinaan",
+        kategori: "Baki Cuti Tahunan",
+        pegawai: "Ahmad Faizal bin Rahman",
+        status: "Selesai",
+        tarikhTemujanji: "2026-11-10",
+        catatan: "Majikan telah melunaskan bayaran ganti baki cuti berjumlah RM1,450.00."
+      }
+    ];
+
+    function getBadgeClass(status) {
+      switch (status) {
+        case "Baru": return "badge-baru";
+        case "Dalam Siasatan": return "badge-siasatan";
+        case "Sesi Rundingan": return "badge-rundingan";
+        case "Selesai": return "badge-selesai";
+        case "Ditutup": return "badge-ditutup";
+        default: return "badge-baru";
+      }
+    }
+
+    function kemaskiniStatistik() {
+      document.getElementById("statTotal").textContent = senaraiAduan.length;
+      document.getElementById("statBaru").textContent = senaraiAduan.filter(a => a.status === "Baru").length;
+      document.getElementById("statProses").textContent = senaraiAduan.filter(
+        a => a.status === "Dalam Siasatan" || a.status === "Sesi Rundingan"
+      ).length;
+      document.getElementById("statSelesai").textContent = senaraiAduan.filter(
+        a => a.status === "Selesai" || a.status === "Ditutup"
+      ).length;
+    }
+
+    function paparJadual(data) {
+      const tbody = document.getElementById("aduanTableBody");
+      tbody.innerHTML = "";
+
+      if (data.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" style="text-align:center; padding: 24px; color: #64748b;">
+              Tiada rekod aduan ditemui berdasarkan kriteria carian.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      data.forEach(item => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>
+            <span class="ref-no">${item.noRujukan}</span>
+            <span class="sub-text">${item.sektor}</span>
+          </td>
+          <td>${item.tarikhDaftar}</td>
+          <td>
+            <strong>${item.namaPengadu}</strong>
+            <span class="sub-text">${item.noMyKad} | ${item.telefon}</span>
+          </td>
+          <td>${item.majikan}</td>
+          <td>${item.kategori}</td>
+          <td>${item.pegawai}</td>
+          <td><span class="badge ${getBadgeClass(item.status)}">${item.status}</span></td>
+          <td>
+            <button class="btn-action" onclick="bukaModal(${item.id})">⚙️ Urus</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function tapisAduan() {
+      const kataKunci = document.getElementById("searchInput").value.toLowerCase();
+      const status = document.getElementById("statusFilter").value;
+      const kategori = document.getElementById("kategoriFilter").value;
+
+      const hasil = senaraiAduan.filter(item => {
+        const padanTeks =
+          item.noRujukan.toLowerCase().includes(kataKunci) ||
+          item.namaPengadu.toLowerCase().includes(kataKunci) ||
+          item.noMyKad.toLowerCase().includes(kataKunci) ||
+          item.majikan.toLowerCase().includes(kataKunci);
+
+        const padanStatus = status === "" || item.status === status;
+        const padanKategori = kategori === "" || item.kategori === kategori;
+
+        return padanTeks && padanStatus && padanKategori;
+      });
+
+      paparJadual(hasil);
+    }
+
+    function resetPenapis() {
+      document.getElementById("searchInput").value = "";
+      document.getElementById("statusFilter").value = "";
+      document.getElementById("kategoriFilter").value = "";
+      paparJadual(senaraiAduan);
+    }
+
+    function bukaModal(id) {
+      const item = senaraiAduan.find(a => a.id === id);
+      if (!item) return;
+
+      document.getElementById("editId").value = item.id;
+      document.getElementById("modalTitle").textContent = `Urus Kes: ${item.noRujukan}`;
+      document.getElementById("modalDetails").innerHTML = `
+        <div class="detail-item"><span>Nama Pengadu</span><strong>${item.namaPengadu}</strong></div>
+        <div class="detail-item"><span>No. MyKad / Tel</span><strong>${item.noMyKad} (${item.telefon})</strong></div>
+        <div class="detail-item"><span>Majikan / Defendan</span><strong>${item.majikan}</strong></div>
+        <div class="detail-item"><span>Kategori Aduan</span><strong>${item.kategori}</strong></div>
+      `;
+
+      document.getElementById("editStatus").value = item.status;
+      document.getElementById("editPegawai").value = item.pegawai;
+      document.getElementById("editTarikhTemujanji").value = item.tarikhTemujanji;
+      document.getElementById("editCatatan").value = item.catatan;
+
+      document.getElementById("modalUrus").classList.add("show");
+    }
+
+    function tutupModal() {
+      document.getElementById("modalUrus").classList.remove("show");
+    }
+
+    function simpanTindakan() {
+      const id = parseInt(document.getElementById("editId").value, 10);
+      const index = senaraiAduan.findIndex(a => a.id === id);
+      if (index === -1) return;
+
+      senaraiAduan[index].status = document.getElementById("editStatus").value;
+      senaraiAduan[index].pegawai = document.getElementById("editPegawai").value;
+      senaraiAduan[index].tarikhTemujanji = document.getElementById("editTarikhTemujanji").value;
+      senaraiAduan[index].catatan = document.getElementById("editCatatan").value;
+
+      kemaskiniStatistik();
+      tapisAduan();
+      tutupModal();
+    }
+
+    function eksportCSV() {
+      const baris = [
+        ["No Rujukan", "Tarikh Daftar", "Nama Pengadu", "No MyKad", "Majikan", "Kategori", "Pegawai", "Status"]
+      ];
+      senaraiAduan.forEach(a => {
+        baris.push([a.noRujukan, a.tarikhDaftar, a.namaPengadu, a.noMyKad, a.majikan, a.kategori, a.pegawai, a.status]);
+      });
+
+      const kandunganCSV = "data:text/csv;charset=utf-8," + baris.map(e => e.join(",")).join("\n");
+      const pautan = document.createElement("a");
+      pautan.setAttribute("href", encodeURI(kandunganCSV));
+      pautan.setAttribute("download", "Senarai_Aduan_JTK_Kluang.csv");
+      document.body.appendChild(pautan);
+      pautan.click();
+      document.body.removeChild(pautan);
+    }
+
+    // Inisialisasi paparan awal
+    kemaskiniStatistik();
+    paparJadual(senaraiAduan);
+  </script>
+</body>
+</html>
